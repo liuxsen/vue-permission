@@ -1,0 +1,5 @@
+export default {
+  GET_USER_INFO: 'GET_USER_INFO',
+  UPDATE_ROLES: 'UPDATE_ROLES',
+  ADD_ROUTERS: 'ADD_ROUTERS'
+};
