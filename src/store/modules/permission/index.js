@@ -2,6 +2,8 @@ import api from '../../../api';
 import constants from './constant';
 
 import { routerMap as initRouterList, asyncRouterMap as asyncRouterInitList } from '../../../router/index';
+// 按钮权限
+import { constantButtonPermission } from './buttonPermission';
 
 export const modulePermission = {
   namspaced: true,
@@ -9,7 +11,9 @@ export const modulePermission = {
     userinfo: {},
     roles: [],
     addRoutes: [],
-    routers: initRouterList
+    routers: initRouterList,
+    allButtons: AllButton(constantButtonPermission),
+    accessedButtons: []
   },
   getters: {
     token(state, getters, rootstate) {
@@ -33,6 +37,9 @@ export const modulePermission = {
     [constants.ADD_ROUTERS](state, routers) {
       state.addRoutes = routers;
       state.routers = initRouterList.concat(routers);
+    },
+    [constants.INIT_PERMISSION_BUTTONS](state, buttons) {
+      state.accessedButtons = buttons;
     }
   },
   actions: {
@@ -45,7 +52,9 @@ export const modulePermission = {
     GenerateRoutes({ commit, state }, rolesList) {
       return new Promise((resolve, reject) => {
         const accessedRoutes = fillterAsyncRouter(asyncRouterInitList, rolesList);
+        const accessedButtons = FilterButton(constantButtonPermission, rolesList);
         commit(constants.ADD_ROUTERS, accessedRoutes);
+        commit(constants.INIT_PERMISSION_BUTTONS, accessedButtons);
         resolve();
       });
     }
@@ -68,4 +77,29 @@ function fillterAsyncRouter(asyncRouterInitList, rolesList) {
 
 function filterRole(routeRoles, currentRoles) {
   return routeRoles.some(item => currentRoles.indexOf(item) !== -1);
+}
+
+// --------button---------
+
+/**
+ * 返回所有用户按钮和视图
+ * @param {constantButtonPermission} constantButtonPermission
+ */
+function AllButton(constantButtonPermission) {
+  const AllPermission = {};
+  constantButtonPermission.forEach(item => {
+    AllPermission[item.name] = item;
+  });
+  return AllPermission;
+}
+
+/**
+ * 过滤按钮视图，返回符合用户的按钮和视图
+ * @param {constantButtonPermission} constantButtonPermission
+ * @param {rolesList} rolesList
+ */
+function FilterButton(constantButtonPermission, rolesList) {
+  return constantButtonPermission.filter(button => {
+    return filterRole(button.meta.roles, rolesList);
+  });
 }

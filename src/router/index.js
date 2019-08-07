@@ -14,7 +14,8 @@ Vue.use(Router);
 
 export const routerMap = [
   {
-    path: '/dashboard',
+    path: '/',
+    redirect: '/dashboard',
     component: Container,
     children: [
       {
