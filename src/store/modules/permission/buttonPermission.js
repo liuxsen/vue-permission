@@ -11,7 +11,14 @@ export const constantButtonPermission = [
     name: 'person_delete', //
     title: '删除按钮',
     meta: {
-      roles: ['m1']
+      roles: ['m1', 'm3']
+    }
+  },
+  {
+    name: 'person_delete', //
+    title: '删除按钮',
+    meta: {
+      roles: ['m4']
     }
   }
 ];

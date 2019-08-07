@@ -9,35 +9,42 @@ export const modulePermission = {
   namspaced: true,
   state: {
     userinfo: {},
-    roles: [],
-    addRoutes: [],
-    routers: initRouterList,
-    allButtons: AllButton(constantButtonPermission),
-    accessedButtons: []
+    roles: [], // 接口返回的权限列表
+    addRoutes: [], // 异步添加的路由
+    routers: initRouterList, // 默认的路由 && 白名单路由，
+    allButtons: AllButton(constantButtonPermission), // 所有的权限相关 button， 用在指令中
+    accessedButtons: [] // 合法的button，用在指令实现中做过滤
   },
   getters: {
+    // 获取token
     token(state, getters, rootstate) {
       const token = document.cookie;
       return !!token;
     },
+    // 获取角色列表
     roles(state, getters, rootstate) {
       return state.roles;
     },
+    // 获取添加的路由，用在router.beforeEach 异步添加路由
     addRoutes(state, getters, rootstate) {
       return state.addRoutes;
     },
+    // 白名单路由
     whiteRouteList(state) {
       return state.whiteRouteList;
     }
   },
   mutations: {
+    // 获取用户角色，改变state
     [constants.GET_USER_INFO](state, roles) {
       state.roles = roles;
     },
+    // 添加路由，改变state
     [constants.ADD_ROUTERS](state, routers) {
       state.addRoutes = routers;
       state.routers = initRouterList.concat(routers);
     },
+    // 初始化用户按钮权限
     [constants.INIT_PERMISSION_BUTTONS](state, buttons) {
       state.accessedButtons = buttons;
     }
